@@ -1,0 +1,91 @@
+body{
+    background-color: rgb(17, 20, 22);
+}
+.to_do_list_container{
+    margin: 100px auto 0;
+    border-radius: 20px;
+    box-sizing: border-box;
+    padding: 30px 20px;
+    width: 500px;
+    height: 500px;
+    background-color: rgb(104, 137, 148);
+}
+.add_new_list_item_space{
+    display: flex;
+    width:  320px;
+    margin: auto;
+    .add_new_list_item{
+        margin-right: 30px;
+        width: 300px;
+    }
+    .push_new_list_item_button{
+        width: 60px;
+        height: 30px;
+        &:hover{
+            opacity: 0.7;
+        }
+    }
+}
+.list_tab_buttons{
+    display: flex;
+    justify-content: space-evenly;
+    padding-top: 10px;
+    .list_tab_button{
+       cursor: pointer;
+        padding: 10px;
+        .list_tab_button_radio{
+            cursor: pointer;
+        }
+        .list_tab_button_label{
+            cursor: pointer;
+        }
+    }
+}
+.list_items_space{
+    padding: 20px;
+}
+.list_items{
+    display: flex;
+    margin: 10px auto;
+    border-radius: 10px;
+    padding: 0 20px;
+    width: 320px;
+    height: 30px;
+    justify-content: space-between;
+    box-sizing: border-box;
+    background-color: wheat;
+    .list_item{
+        display: flex;
+        .list_item_checkbox{
+            margin-top: 6px;
+            height: 18px;
+            width: 18px;
+        }
+        .list_item_content{
+            cursor: pointer;
+            width: 180px;
+            margin-left: 10px;
+            line-height: 30px; 
+             background-color: wheat;
+        }
+        .list_item_line_through{
+            margin-left: 10px;
+            line-height: 30px; 
+            text-decoration: line-through;
+            color: rgb(126, 125, 125);
+        }
+        .list_item_edit_content{
+            margin-left: 10px;
+        }
+    }
+    .delete_list_item_button{
+        margin-top: 2.5px;
+        width: 50px;
+        height: 25px;
+        &:hover{
+            opacity: 0.7;
+        }
+    }
+}
+
+

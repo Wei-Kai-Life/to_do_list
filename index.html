@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To do list</title>
+    <link rel="stylesheet" href="./reset.css">
+    <link rel="stylesheet" href="./to_do_list2.css">
+</head>
+
+<body>
+    <div id="app">
+        <div class="to_do_list_container">
+            <div class="add_new_list_item_space">
+                <input class="add_new_list_item" type="text" placeholder="請輸入待辦事項" v-model.trim="newItemContent"
+                    @keyup.enter=pushNewListItem()>
+                <button class="push_new_list_item_button" @click="pushNewListItem()">新增</button>
+            </div>
+            <div class="list_tab_buttons">
+                <div class="list_tab_button" v-for="(item,index) in tabButtons">
+                    <input class="list_tab_button_radio" type="radio" :checked="inWhichTabButton === item.type"
+                        :id="item.type" name="tab_button" :disabled="isInEditStatus"
+                        @click="inWhichTabButton = item.type">
+                    <label class="list_tab_button_label" :for="item.type">{{item.content}}</label>
+                </div>
+            </div>
+            <div class="list_items_space">
+                <div class="list_items" v-for="(item,index) in filterAllItems" :key="item.key">
+                    <div class="list_item">
+                        <input type="checkbox" class="list_item_checkbox" v-model="item.isFinished"
+                            :disabled="item.isEditing">
+                        <label class="list_item_content" :class="{list_item_line_through:item.isFinished}"
+                            @click="editListItem(index)" v-if="!item.isEditing">{{item.content}}</label>
+                        <input class="list_item_edit_content" type="text" v-model.trim="item.content"
+                            @keyup.enter="finishedEditListItem(index)" v-if="item.isEditing && !item.isFinished">
+                    </div>
+                    <button class="delete_list_item_button" @click="deleteListItem(index)">DEL</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.12/vue.js'></script>
+
+    <script>
+        let vm = new Vue({
+            el: '#app',
+            data: {
+                inWhichTabButton: 'all',
+                tabButtons: [{
+                        type: 'all',
+                        content: 'All',
+                        isClicked: true,
+                    },
+                    {
+                        type: 'today',
+                        content: '今天新增',
+                        isClicked: false,
+                    },
+                    {
+                        type: 'unfinished',
+                        content: '未完成',
+                        isClicked: false,
+                    },
+                    {
+                        type: 'finished',
+                        content: '完成',
+                        isClicked: false,
+                    },
+                ],
+                allItems: [{
+                        content: "看電影",
+                        isEditing: false,
+                        isFinished: true,
+                        isDelete: false,
+                        theDateTimeStamp: 90903203,
+                        key: 0
+                    },
+                    {
+                        content: "爬山",
+                        isEditing: false,
+                        isFinished: false,
+                        isDelete: false,
+                        theDateTimeStamp: 90903203,
+                        key: 1
+                    },
+                    {
+                        content: "露營",
+                        isEditing: false,
+                        isFinished: false,
+                        isDelete: false,
+                        theDateTimeStamp: 90903203,
+                        key: 2
+                    },
+                ],
+                newItemContent: '',
+                perItemKeyInAllItems: 0,
+                isInEditStatus: false,
+                tempItemContent: ''
+            },
+            computed: {
+                filterAllItems() {
+                    switch (this.inWhichTabButton) {
+                        case 'today':
+                            let tomorrow = new Date()
+                            let tomorrowTimeStamp = new Date(new Date(tomorrow.getFullYear(), tomorrow
+                            .getMonth(), (tomorrow.getDate() + 1))).getTime()
+                            return this.allItems.filter(item => {
+                                return tomorrowTimeStamp - item.theDateTimeStamp <= 86400000
+                            })
+                        case 'unfinished':
+                            return this.allItems.filter(item => {
+                                return !item.isFinished
+                            })
+                        case 'finished':
+                            return this.allItems.filter(item => {
+                                return item.isFinished
+                            })
+                        default:
+                            return this.allItems
+                    }
+                }
+            },
+            methods: {
+                pushNewListItem() {
+                    if (!this.newItemContent) return
+                    let today = new Date()
+                    let todayTimeStamp = new Date(new Date(today.getFullYear(), today.getMonth(), today
+                    .getDate())).getTime()
+                    this.allItems.push({
+                        content: this.newItemContent,
+                        isEditing: false,
+                        isFinished: false,
+                        isDelete: false,
+                        theDateTimeStamp: todayTimeStamp,
+                        key: today.getTime()
+                    })
+                    this.newItemContent = ''
+                },
+                deleteListItem(index) {
+                    if (this.isInEditStatus) return
+                    this.filterAllItems[index].isDelete = true
+                    const findDeleteIdx = this.allItems.findIndex(item => {
+                        return item.isDelete
+                    })
+                    this.allItems.splice(findDeleteIdx, 1)
+                },
+                editListItem(index) {
+                    if (this.filterAllItems[index].isFinished || this.isInEditStatus) return
+                    this.isInEditStatus = true
+                    this.filterAllItems[index].isEditing = true
+                    this.tempItemContent = this.filterAllItems[index].content
+                },
+                finishedEditListItem(index) {
+                    if (!this.filterAllItems[index].content) {
+                        this.filterAllItems[index].content = this.tempItemContent
+                    }
+                    this.filterAllItems[index].isEditing = false
+                    this.isInEditStatus = false
+                    this.tempItemContent = ''
+                },
+            },
+        })
+    </script>
+</body>
+
+</html>
